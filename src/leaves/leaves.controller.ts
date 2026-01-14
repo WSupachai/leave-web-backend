@@ -1,0 +1,23 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { LeavesService } from './leaves.service';
+
+@Controller('leaves') // ใครเข้าลิงก์ /leaves จะมาที่นี่
+export class LeavesController {
+  constructor(private readonly leavesService: LeavesService) {}
+
+  // POST /leaves (พนักงานส่งใบลา)
+  @Post()
+  create(@Body() body: any) {
+    // ส่งข้อมูล body ไปให้ Service ทำงานต่อ
+    return this.leavesService.create(body); 
+  }
+
+  // GET /leaves (ดูประวัติการลาทั้งหมด)
+  @Get()
+  findAll() {
+    return this.leavesService.findAll();
+  }
+
+  // GET /leaves/1 (ดูใบลาเฉพาะใบที่ 1)
+
+}
