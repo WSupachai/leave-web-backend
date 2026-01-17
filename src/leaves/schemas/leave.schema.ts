@@ -11,7 +11,7 @@ export class Leave {
 
   // 1. เพิ่มประเภทการลา
   @Prop({ required: true })
-  type: string; 
+  type: string;
 
   // 2. เพิ่มวันลา
   @Prop({ required: true })
@@ -32,6 +32,21 @@ export class Leave {
   // ✅ เพิ่มบรรทัดนี้แทน (เก็บเป็นชื่อตรงๆ)
   @Prop({ required: true })
   userName: string;
+
+  //รูปแบบการลา (เต็มวัน, ครึ่งเช้า, ครึ่งบ่าย, ระบุเวลา)
+  @Prop({
+    enum: ['full', 'first_half', 'second_half', 'time_range'],
+    default: 'full'
+  })
+  timeVariant: string;
+
+  // เวลาเริ่ม (เช่น "09:00") - ใช้กรณีลาแบบ time_range
+  @Prop()
+  startTime: string;
+
+  // เวลาจบ (เช่น "11:00")
+  @Prop()
+  endTime: string;
 }
 
 export const LeaveSchema = SchemaFactory.createForClass(Leave);
