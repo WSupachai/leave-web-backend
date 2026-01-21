@@ -1,21 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards,Request } from '@nestjs/common';
 import { LeavesService } from './leaves.service';
+import { AuthGuard } from '@nestjs/passport'; // import AuthGuard
+import { CreateLeaveDto } from './dto/create-leave.dto';
 
+// 🔒 แปะป้ายตรงนี้: แปลว่า "ทุก Route ในไฟล์นี้ ต้องมี Token เท่านั้นถึงจะเข้าได้"
+@UseGuards(AuthGuard('jwt'))
 @Controller('leaves') // ใครเข้าลิงก์ /leaves จะมาที่นี่
 export class LeavesController {
   constructor(private readonly leavesService: LeavesService) { }
 
   // POST /leaves (พนักงานส่งใบลา)
   @Post()
-  create(@Body() body: any) {
-    // ส่งข้อมูล body ไปให้ Service ทำงานต่อ
-    return this.leavesService.create(body);
+  create(@Body() createLeaveDto: CreateLeaveDto, @Request() req) {
+    // ✅ จุดพีคอยู่ตรงนี้! 
+    // ดึงชื่อจริงจาก User ที่ Login อยู่ มาใส่ในใบลา
+    createLeaveDto.userName = req.user.fullName; 
+
+    return this.leavesService.create(createLeaveDto);
   }
 
   // GET /leaves (ดูประวัติการลาทั้งหมด)
   @Get()
-  findAll() {
-    return this.leavesService.findAll();
+  findAll(@Request() req) {
+    // ส่ง req.user (ข้อมูลคน Login) ไปให้ Service กรอง
+    return this.leavesService.findAll(req.user);
   }
 
   @Patch(':id/status')
@@ -26,9 +34,9 @@ export class LeavesController {
     return this.leavesService.updateStatus(id, status);
   }
 
-  @Delete(':id')  
-  remove(@Param('id') id: string) {
-    return this.leavesService.remove(id);
+  @Delete(':id')
+  remove(@Param('id') id: string, @Request() req) { // รับ req มาด้วย
+    return this.leavesService.remove(id, req.user); // ส่ง user ไปให้ service เช็ค
   }
 
 }

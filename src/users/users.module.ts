@@ -11,6 +11,6 @@ import { User, UserSchema } from './schemas/user.schema'; // 2. เพิ่ม�
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService], // 4. export เพื่อให้ Module อื่น (เช่น Leaves) เรียกใช้ได้ในอนาคต
+  exports: [UsersService], // export เพื่อให้ Module อื่น (เช่น Leaves) เรียกใช้ได้ในอนาคต
 })
 export class UsersModule {}

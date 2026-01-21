@@ -1,25 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './schemas/user.schema';
+import { User, UserDocument } from './schemas/user.schema';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(createUserDto: any) {
-    const newUser = new this.userModel(createUserDto);
-    return newUser.save();
+    // 1. เข้ารหัสรหัสผ่านก่อนบันทึก
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+
+    // 2. แทนที่รหัสผ่านเดิมด้วยรหัสที่เข้ารหัสแล้ว
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    return createdUser.save();
   }
 
+  async findOne(username: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ username }).exec();
+  }
+
+  
   async findAll() {
     return this.userModel.find().exec();
   }
-  
-  // เพิ่มฟังก์ชันหา User ตาม ID (จะได้ใช้ตอนเช็คว่าเป็นหัวหน้าใคร)
-  async findOne(id: string) {
-    return this.userModel.findById(id).exec();
-  }
+
 
   // แก้ไขข้อมูล (รับ id เป็น string)
   async update(id: string, updateUserDto: any) {
