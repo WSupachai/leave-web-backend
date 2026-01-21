@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport'; // import AuthGuard
 import { CreateLeaveDto } from './dto/create-leave.dto';
 
 // 🔒 แปะป้ายตรงนี้: แปลว่า "ทุก Route ในไฟล์นี้ ต้องมี Token เท่านั้นถึงจะเข้าได้"
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 @Controller('leaves') // ใครเข้าลิงก์ /leaves จะมาที่นี่
 export class LeavesController {
   constructor(private readonly leavesService: LeavesService) { }
