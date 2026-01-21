@@ -10,11 +10,13 @@ export class LeavesController {
   constructor(private readonly leavesService: LeavesService) { }
 
   // POST /leaves (พนักงานส่งใบลา)
-  @Post()
+ @Post()
   create(@Body() createLeaveDto: CreateLeaveDto, @Request() req) {
-    // ✅ จุดพีคอยู่ตรงนี้! 
-    // ดึงชื่อจริงจาก User ที่ Login อยู่ มาใส่ในใบลา
+    // 1. ดึงชื่อใส่ (เหมือนเดิม)
     createLeaveDto.userName = req.user.fullName; 
+
+    // 2. ✅ ดึงแผนกจาก User ใส่ลงในใบลา (เพิ่มใหม่)
+    createLeaveDto.department = req.user.department; 
 
     return this.leavesService.create(createLeaveDto);
   }
@@ -38,5 +40,7 @@ export class LeavesController {
   remove(@Param('id') id: string, @Request() req) { // รับ req มาด้วย
     return this.leavesService.remove(id, req.user); // ส่ง user ไปให้ service เช็ค
   }
+
+  
 
 }

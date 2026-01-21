@@ -6,8 +6,6 @@ export type LeaveDocument = HydratedDocument<Leave>;
 
 @Schema({ timestamps: true }) // เพิ่ม timestamps จะได้รู้วันที่สร้างใบลา
 export class Leave {
-  //@Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  //user: User;
 
   // 1. เพิ่มประเภทการลา
   @Prop({ required: true })
@@ -47,6 +45,9 @@ export class Leave {
   // เวลาจบ (เช่น "11:00")
   @Prop()
   endTime: string;
+
+  @Prop() 
+  department: string;
 }
 
 export const LeaveSchema = SchemaFactory.createForClass(Leave);

@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto'; // (ถ้าคุณม
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt')) // ✅ ต้องมี Token ถึงเข้าได้
+ @UseGuards(AuthGuard('jwt')) // ✅ ต้องมี Token ถึงเข้าได้
   @Post()
   create(@Body() createUserDto: any, @Request() req) { // ใช้ any ไปก่อนถ้าขี้เกียจแก้ DTO
     // 👮‍♂️ เช็คสิทธิ์: ถ้าไม่ใช่ Admin ห้ามสร้าง User!

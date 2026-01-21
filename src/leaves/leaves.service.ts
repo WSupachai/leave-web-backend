@@ -19,13 +19,22 @@ export class LeavesService {
   // 👇 แก้ตรงนี้ครับ! ใส่ (user: any) เข้าไปในวงเล็บ
   async findAll(user: any): Promise<Leave[]> { 
     
-    // 👮‍♂️ ถ้าเป็น Admin หรือ Manager -> ให้ดูได้ทั้งหมด
-    if (user.role === 'admin' || user.role === 'manager') {
+    // 👑 1. Admin: ใหญ่สุด เห็นของทุกคน ทุกแผนก
+    if (user.role === 'admin') {
       return this.leaveModel.find().sort({ createdAt: -1 }).exec();
     }
-    
-    // 👤 ถ้าเป็นพนักงานทั่วไป -> ดูได้แค่ของตัวเอง
-    return this.leaveModel.find({ userName: user.fullName }).sort({ createdAt: -1 }).exec();
+
+    // 👔 2. Manager: เห็นเฉพาะใบลาที่ "แผนกตรงกับตัวเอง"
+    if (user.role === 'manager') {
+      return this.leaveModel.find({ 
+        department: user.department // ✅ กรองตรงนี้ครับ
+      }).sort({ createdAt: -1 }).exec();
+    }
+
+    // 👷‍♂️ 3. Employee (พนักงานทั่วไป): เห็นแค่ "ของตัวเอง"
+    return this.leaveModel.find({ 
+      userName: user.fullName 
+    }).sort({ createdAt: -1 }).exec();
   }
 
   async updateStatus(id: string, status: string) {
